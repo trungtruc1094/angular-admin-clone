@@ -1,0 +1,88 @@
+<!-- Breadcrumbs-->
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="#">Dashboard</a>
+    </li>
+    <li class="breadcrumb-item active">Overview</li>
+</ol>
+
+<!-- Area Chart Example-->
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fas fa-chart-area"></i>
+        New Recipe</div>
+
+    <div class="card-body">
+        <form>
+            <!-- First Row -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputRecipeName">Recipe Name</label>
+                    <input type="text" class="form-control" id="inputRecipeName" aria-describedby="emailHelp" placeholder="">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputLevel">Level</label>
+                    <select id="inputLevel" class="form-control">
+                        <option selected>Hard</option>
+                        <option>Medium</option>
+                        <option>Easy</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Second Row -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputTime">Time</label>
+                    <input type="text" class="form-control" id="inputTime" aria-describedby="emailHelp" placeholder="">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputUnit">Unit</label>
+                    <select id="inputUnit" class="form-control">
+                        <option selected>Hour(s)</option>
+                        <option>Minute(s)</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Third Row -->
+            <div class="form-group">
+                <label for="inputIngredients">Ingredients</label>
+                <div id="dynamicList">
+                    <div class="form-row mb-1">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="inputIngredientName" aria-describedby="emailHelp" placeholder="">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" id="inputIngredientAmount" aria-describedby="emailHelp" placeholder="">
+                        </div>
+                        <div class="col-md-1">
+                            <select id="inputIngredientsUnit" class="form-control">
+                                <option selected>Kg(s)</option>
+                                <option>Gram(s)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button name="add" id="add" class="btn btn-success">Add more</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Upload Image -->
+            <div class="form-group">
+                <label for="uploadPhoto">Photos</label>
+                <br/>
+                <label class="btn btn-primary">
+                    Choose Files
+                    <input type="file" ng2FileSelect [uploader]="uploader"/>
+                </label> 
+                <div class="container" *ngIf="downloadURLString">
+                    <img src="{{ downloadURLString }}" class="img-thumbnail" alt="Cinque Terre" width="304" height="236">
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" (click)="submitClick()">Submit</button>
+            </div>  
+        </form>
+    </div>
+
+    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+</div>
