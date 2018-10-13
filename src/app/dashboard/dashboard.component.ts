@@ -1,40 +1,36 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 
-import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireStorageModule, AngularFireUploadTask, AngularFireStorage } from '@angular/fire/storage';
 import { Observable } from 'rxjs';
 import { map, tap, finalize } from 'rxjs/operators';
+import { RecipeService } from '../shared/services/recipe.service';
+import { Recipe } from '../models/recipe/recipe.model';
+import { RecipeId } from '../models/recipe/recipeid.model';
 
 declare var $: any;
-// const URL = '/api/';
-const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
+  recipe: Recipe;
+  recipes: RecipeId[];
+
   uploader: FileUploader;
 
-  // Main Task
-  task: AngularFireUploadTask;
-
-  // Progress Monitoring
-  percentage: Observable<number>;
-  snapshot: Observable<any>;
-
   // Download URL
-  downloadURL: Observable<any>;
-  downloadURLString: string;
+  downloadURL: string[] = [];
 
-  constructor(private afStorage: AngularFireStorage, private db: AngularFirestore) {
-    this.uploader = new FileUploader({ url: '' });
-  }
+  constructor(private recipeService: RecipeService) {}
 
 
   ngOnInit() {
-    
+    this.uploader = new FileUploader({ url: '' });
+    this.recipeService.getAllRecipes().subscribe(recipes => {
+      this.recipes = recipes;
+    })
   }
 
   ngAfterViewInit() {
@@ -56,44 +52,33 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   submitClick() {
-    console.log('Start uploading');
-    // The file object
-    const file = this.uploader.queue[this.uploader.queue.length - 1]['_file'];
-
-    // Client-side validation
-    if (file.type.split('/')[0] !== 'image') {
-      console.error('unsupported file type: ( ');
-    }
-
-    // The storage path
-    const path = `test/${new Date().getTime()}_${file.name}`;
-
-    // Totally optional metadate
-    const customMetadata = { app: 'My AngularFire-powered PWA!' };
-
-    // The main task
-    this.task = this.afStorage.upload(path, file, { customMetadata });
-
-    // Progress monitoring
-    this.percentage = this.task.percentageChanges();
-    this.snapshot = this.task.snapshotChanges().pipe(
-      tap(snap => {
-        if (snap.bytesTransferred === snap.totalBytes) {
-          // this.db.collection('photos').add({ path, size: snap.totalBytes });
-          console.log('Uploaded Successfully');
+    console.log('Submit click');
+    const fileArr = this.uploader.queue;
+    fileArr.forEach(element => {
+      const file = element['_file'];
+      this.recipeService.uploadImage(file).subscribe(res => {
+        // console.log('res',res.url);
+        this.downloadURL.push(res.url);
+        if (this.downloadURL.length === fileArr.length) {
+          this.uploadRecipe();
         }
-      })
-    );
+      });
+    });
+  }
 
-    // The file's download URL
-    const fileRef = this.afStorage.ref(path);
-    this.task.snapshotChanges().pipe(
-      finalize(() => {
-        fileRef.getDownloadURL().subscribe((res) => {
-          this.downloadURLString = res;
-        });
-      })
-    ).subscribe();
+  // Upload recipe
+  uploadRecipe() {
+    console.log('Upload Recipe');
+    console.log('url', this.downloadURL);
+    const newRecipe = new Recipe('Tam',
+      'Qua da',
+      this.downloadURL
+    );
+    this.recipeService.addNewRecipe(newRecipe);
+  }
+
+  removeForm(){
+    this.downloadURL = [];
   }
 }
 
