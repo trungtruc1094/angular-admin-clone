@@ -85,19 +85,34 @@ export class RecipeService {
                 // Progress Monitoring
                 let snapshot: Observable<any>;
 
-                task = this.afStore.upload(path, file, { customMetadata });
+                // task = this.afStore.upload(path, file, { customMetadata });
+                // this.afStore.upload(path, file, { customMetadata }).snapshotChanges().pipe(
+                //     finalize(() => {
+                //         this.afStore.ref(path).getDownloadURL().toPromise()
+                //         .then(res => {
+                //             observer.next({url: res});
+                //         })
+                //     })
+                // );
 
-                const fileRef = this.afStore.ref(path);
-                snapshot = task.snapshotChanges();
-                snapshot.pipe(
-                    finalize(() => {
-                        fileRef.getDownloadURL().subscribe((res) => {
-                            observer.next({
-                                url: res
-                            });
-                        });
-                    })
-                ).subscribe();
+                // this.afStore.upload(path, file, { customMetadata }).snapshotChanges().toPromise()
+                // .then(res => {
+                //     if (res.bytesTransferred === res.totalBytes) {
+                //         this.url = res.downloadURL
+                //     }
+                // })
+
+                // const fileRef = this.afStore.ref(path);
+                // snapshot = task.snapshotChanges();
+                // snapshot.pipe(
+                //     finalize(() => {
+                //         fileRef.getDownloadURL().subscribe((res) => {
+                //             observer.next({
+                //                 url: res
+                //             });
+                //         });
+                //     })
+                // ).subscribe();
             });
         }
     }
