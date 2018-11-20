@@ -102,17 +102,17 @@ export class RecipeService {
                 //     }
                 // })
 
-                // const fileRef = this.afStore.ref(path);
-                // snapshot = task.snapshotChanges();
-                // snapshot.pipe(
-                //     finalize(() => {
-                //         fileRef.getDownloadURL().subscribe((res) => {
-                //             observer.next({
-                //                 url: res
-                //             });
-                //         });
-                //     })
-                // ).subscribe();
+                const fileRef = this.afStore.ref(path);
+                snapshot = task.snapshotChanges();
+                snapshot.pipe(
+                    finalize(() => {
+                        fileRef.getDownloadURL().subscribe((res) => {
+                            observer.next({
+                                url: res
+                            });
+                        });
+                    })
+                ).subscribe();
             });
         }
     }
